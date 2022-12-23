@@ -5,11 +5,15 @@ const listVersionControlledFilesCommand = 'git ls-tree HEAD -r --name-only'
 
 export async function getVersionControlledFiles(): Promise<string[]> {
   return new Promise((resolve, reject) => {
-    exec(listVersionControlledFilesCommand, (err, stdout, stderr) => {
-      if (err != null) reject(err)
-      if (typeof stderr != 'string') reject(stderr)
-      resolve(stdout.split(/\r?\n/).filter(Boolean))
-    })
+    exec(
+      listVersionControlledFilesCommand,
+      {maxBuffer: 1024 * 4096},
+      (err, stdout, stderr) => {
+        if (err != null) reject(err)
+        if (typeof stderr != 'string') reject(stderr)
+        resolve(stdout.split(/\r?\n/).filter(Boolean))
+      }
+    )
   })
 }
 
